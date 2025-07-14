@@ -69,16 +69,19 @@ module.exports = async (params = {}, { context }) => {
   const showAdvertiserCTOR = get(data, 'reportEmailMetrics.campaign.showAdvertiserCTOR');
   const showTotalAdClicksPerDay = get(data, 'reportEmailMetrics.campaign.showTotalAdClicksPerDay');
   const showTotalUniqueClicks = get(data, 'reportEmailMetrics.campaign.showTotalUniqueClicks');
+  let campaignHasEblast = false;
 
   const rows = getAsArray(data, 'reportEmailMetrics.deployments').map((row) => {
     const { deployment } = row;
     const { metrics } = deployment;
+    const isEblast = deployment.name.match(/eblast/i);
+    if (isEblast) campaignHasEblast = true;
     return {
       Name: deployment.name,
       Date: dayjs.tz(deployment.sentDate, 'America/Chicago').format('MMM Do, YYYY HH:mm a'),
       Delivered: metrics.delivered,
       'Unique Opens': metrics.uniqueOpens,
-      'Unique Clicks': metrics.uniqueClicks,
+      ...(!isEblast && { 'Unique Clicks': metrics.uniqueClicks }),
       'Open Rate': (metrics.openRate * 100).toFixed(1),
       CTOR: (metrics.clickToOpenRate * 100).toFixed(1),
       CTR: (metrics.clickToDeliveredRate * 100).toFixed(1),
@@ -96,7 +99,7 @@ module.exports = async (params = {}, { context }) => {
     Date: '',
     Delivered: metrics.delivered,
     'Unique Opens': metrics.uniqueOpens,
-    'Unique Clicks': metrics.uniqueClicks,
+    ...(!campaignHasEblast && { 'Unique Clicks': metrics.uniqueClicks }),
     'Open Rate': (metrics.openRate * 100).toFixed(1),
     CTOR: (metrics.clickToOpenRate * 100).toFixed(1),
     CTR: (metrics.clickToDeliveredRate * 100).toFixed(1),
@@ -107,8 +110,9 @@ module.exports = async (params = {}, { context }) => {
   });
 
   if (!rows.length) return '';
+  const rowsComplete = rows.filter((row) => row['Unique Clicks']);
   const parser = new Parser({
-    fields: Object.keys(rows[0]),
+    fields: Object.keys(rowsComplete.length ? rowsComplete[0] : rows[0]),
   });
   return parser.parse(rows);
 };
