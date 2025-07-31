@@ -176,7 +176,7 @@ const emailSchema = new Schema({
   ],
   excludeFields: {
     type: [String],
-    default: ['phoneNumber', 'last', 'attributes.Annual Sales'],
+    default: ['phoneNumber', 'last', 'attributes.Annual Sales', 'attributes.Number of Employees'],
   },
   allowedLinkTypes: {
     type: [String],
