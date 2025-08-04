@@ -88,9 +88,10 @@ module.exports = {
     /**
      *
      */
-    extractUrlsFromHtml: (root, { html }, { auth }) => {
+    extractUrlsFromHtml: async (root, { html }, { auth }) => {
       auth.checkAdmin();
-      return LinkInjector.extractUrlsFrom(html);
+      const links = await LinkInjector.extractUrlsFrom(html);
+      return links.filter((href) => !href.match(/\/email-preview\?newsletterId=/i));
     },
 
     /**
