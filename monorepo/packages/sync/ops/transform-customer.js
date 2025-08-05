@@ -15,6 +15,8 @@ const demoMap = new Map([
   [106, 'Job Function'],
   [83, 'Annual Sales'],
   [103, 'Annual Sales'],
+  [84, 'Number of Employees'],
+  [104, 'Number of Employees'],
 ]);
 
 /**

@@ -43,6 +43,7 @@ export default Service.extend({
       { key: 'attributes.Industry', label: 'Industry' },
       { key: 'attributes.Job Function', label: 'Job Function' },
       { key: 'attributes.Annual Sales', label: 'Annual Sales', adminOnly: true },
+      { key: 'attributes.Number of Employees', label: 'Number of Employees', adminOnly: true },
       // { key: 'attributes.NAICS Code', label: 'NAICS' },
     ]);
 
